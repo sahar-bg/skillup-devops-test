@@ -58,7 +58,7 @@ pipeline {
                             -Dsonar.projectKey=frontend-app \
                             -Dsonar.projectName=frontend-app \
                             -Dsonar.sources=src \
-                            -Dsonar.host.url=http://localhost:9000 \
+                            -Dsonar.host.url=http://sonarqube:9000 \
                             -Dsonar.verbose=true
                         """
                     }
