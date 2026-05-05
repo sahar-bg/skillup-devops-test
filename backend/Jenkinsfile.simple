@@ -1,0 +1,102 @@
+pipeline {
+    agent any
+    
+    tools {
+        nodejs 'Node20'
+    }
+    
+    environment {
+        SONAR_SCANNER_HOME = tool 'SonarScanner'
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Récupération du code source...'
+                checkout scm
+            }
+        }
+        
+        stage('Install Dependencies') {
+            steps {
+                dir('backend') {
+                    echo 'Installation des dépendances...'
+                    sh 'npm ci'
+                }
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                dir('backend') {
+                    echo 'Construction du projet...'
+                    sh 'npm run build'
+                }
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                dir('backend') {
+                    echo 'Exécution des tests avec couverture...'
+                    sh 'npm run test:ci'
+                }
+            }
+            post {
+                always {
+                    dir('backend') {
+                        // Publication des résultats de tests si disponibles
+                        script {
+                            if (fileExists('coverage/lcov.info')) {
+                                echo 'Fichiers de couverture trouvés'
+                            } else {
+                                echo 'Aucun fichier de couverture trouvé'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('SonarQube Analysis') {
+            steps {
+                dir('backend') {
+                    withSonarQubeEnv('SonarQubeServer') {
+                        sh """
+                            ${SONAR_SCANNER_HOME}/bin/sonar-scanner \\
+                            -Dsonar.projectKey=backend-hr-system \\
+                            -Dsonar.projectName="Backend HR System" \\
+                            -Dsonar.projectVersion=1.0 \\
+                            -Dsonar.sources=src \\
+                            -Dsonar.tests=src \\
+                            -Dsonar.test.inclusions=**/*.spec.ts,**/*.test.ts \\
+                            -Dsonar.exclusions=**/*.spec.ts,**/*.test.ts,node_modules/**,dist/**,coverage/** \\
+                            -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info \\
+                            -Dsonar.sourceEncoding=UTF-8
+                        """
+                    }
+                }
+            }
+        }
+        
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 2, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            echo 'Pipeline terminé'
+        }
+        success {
+            echo '✅ Pipeline réussi ! Tests passés et analyse SonarQube terminée.'
+        }
+        failure {
+            echo '❌ Pipeline échoué. Vérifiez les logs pour plus de détails.'
+        }
+    }
+}
