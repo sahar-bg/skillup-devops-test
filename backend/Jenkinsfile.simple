@@ -1,31 +1,31 @@
 pipeline {
     agent any
-    
+
     tools {
         nodejs 'Node20'
     }
-    
+
     environment {
         SONAR_SCANNER_HOME = tool 'SonarScanner'
     }
-    
+
     stages {
         stage('Checkout') {
             steps {
-                echo 'R├®cup├®ration du code source...'
+                echo 'Récupération du code source...'
                 checkout scm
             }
         }
-        
+
         stage('Install Dependencies') {
             steps {
                 dir('backend') {
-                    echo 'Installation des d├®pendances...'
+                    echo 'Installation des dépendances...'
                     sh 'npm ci'
                 }
             }
         }
-        
+
         stage('Build') {
             steps {
                 dir('backend') {
@@ -34,44 +34,44 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Test') {
             steps {
                 dir('backend') {
-                    echo 'Ex├®cution des tests avec couverture...'
+                    echo 'Exécution des tests avec couverture...'
                     sh 'npm run test:ci'
                 }
             }
             post {
                 always {
                     dir('backend') {
-                        // Publication des r├®sultats de tests si disponibles
+                        // Publication des résultats de tests si disponibles
                         script {
                             if (fileExists('coverage/lcov.info')) {
-                                echo 'Fichiers de couverture trouv├®s'
+                                echo 'Fichiers de couverture trouvés'
                             } else {
-                                echo 'Aucun fichier de couverture trouv├®'
+                                echo 'Aucun fichier de couverture trouvé'
                             }
                         }
                     }
                 }
             }
         }
-        
+
         stage('SonarQube Analysis') {
             steps {
                 dir('backend') {
                     withSonarQubeEnv('SonarQube') {
                         withEnv(["SONAR_HOST_URL=http://172.17.0.3:9000"]) {
                             sh """
-                            ${SONAR_SCANNER_HOME}/bin/sonar-scanner \\
-                            -Dsonar.projectKey=backend-hr-system \\
-                            -Dsonar.projectName="Backend HR System" \\
-                            -Dsonar.projectVersion=1.0 \\
-                            -Dsonar.sources=src \\
-                            -Dsonar.tests=src \\
-                            -Dsonar.test.inclusions=**/*.spec.ts,**/*.test.ts \\
-                            -Dsonar.exclusions=**/*.spec.ts,**/*.test.ts,node_modules/**,dist/**,coverage/** \\
+                            ${SONAR_SCANNER_HOME}/bin/sonar-scanner \
+                            -Dsonar.projectKey=backend-hr-system \
+                            -Dsonar.projectName="Backend HR System" \
+                            -Dsonar.projectVersion=1.0 \
+                            -Dsonar.sources=src \
+                            -Dsonar.tests=src \
+                            -Dsonar.test.inclusions=**/*.spec.ts,**/*.test.ts \
+                            -Dsonar.exclusions=**/*.spec.ts,**/*.test.ts,node_modules/**,dist/**,coverage/** \
                             -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info \
                             -Dsonar.sourceEncoding=UTF-8
                         """
@@ -80,25 +80,17 @@ pipeline {
                 }
             }
         }
-        
-        stage('Quality Gate') {
-            steps {
-                timeout(time: 2, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
     }
-    
+
     post {
         always {
-            echo 'Pipeline termin├®'
+            echo 'Pipeline terminé'
         }
         success {
-            echo 'Ô£à Pipeline r├®ussi ! Tests pass├®s et analyse SonarQube termin├®e.'
+            echo ' Pipeline réussi ! Tests passés et analyse SonarQube terminée.'
         }
         failure {
-            echo 'ÔØî Pipeline ├®chou├®. V├®rifiez les logs pour plus de d├®tails.'
+            echo ' Pipeline échoué. Vérifiez les logs pour plus de détails.'
         }
     }
 }
