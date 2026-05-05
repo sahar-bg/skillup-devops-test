@@ -44,16 +44,13 @@ pipeline {
             steps {
                 dir('frontend') {
                     withSonarQubeEnv('SonarQube') {
-                        withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                            sh """
-                                ${tool('SonarScanner')}/bin/sonar-scanner \
-                                -Dsonar.projectKey=frontend-app \
-                                -Dsonar.projectName=frontend-app \
-                                -Dsonar.sources=. \
-                                -Dsonar.host.url=http://localhost:9000 \
-                                -Dsonar.token=${SONAR_TOKEN}
-                            """
-                        }
+                        sh """
+                            ${tool('SonarScanner')}/bin/sonar-scanner \
+                            -Dsonar.projectKey=frontend-app \
+                            -Dsonar.projectName=frontend-app \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=http://localhost:9000
+                        """
                     }
                 }
             }
