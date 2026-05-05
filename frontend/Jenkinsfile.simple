@@ -43,16 +43,16 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 dir('frontend') {
-                    script {
-                        try {
-                            withSonarQubeEnv('SonarQube') {
-                                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                                    sh "${tool('SonarScanner')}/bin/sonar-scanner -Dsonar.token=${SONAR_TOKEN}"
-                                }
-                            }
-                        } catch (Exception e) {
-                            echo "SonarQube analysis completed with issues: ${e.message}"
-                            unstable(message: "SonarQube analysis found quality gate issues")
+                    withSonarQubeEnv('SonarQube') {
+                        withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                            sh """
+                                ${tool('SonarScanner')}/bin/sonar-scanner \
+                                -Dsonar.projectKey=frontend-app \
+                                -Dsonar.projectName=frontend-app \
+                                -Dsonar.sources=. \
+                                -Dsonar.host.url=http://localhost:9000 \
+                                -Dsonar.token=${SONAR_TOKEN}
+                            """
                         }
                     }
                 }
