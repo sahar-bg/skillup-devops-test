@@ -37,7 +37,7 @@ pipeline {
         stage('Test') {
             steps {
                 dir('frontend') {
-                    echo 'Exécution des tests...'
+                    echo 'Exécution des tests avec couverture...'
                     script {
                         def testResult = sh(script: 'npm run test:ci', returnStatus: true)
                         if (testResult != 0) {
@@ -45,6 +45,27 @@ pipeline {
                             unstable(message: 'Tests failed but pipeline continues')
                         }
                     }
+                    
+                    // Vérification de la génération des fichiers de couverture
+                    echo '📊 Vérification des fichiers de couverture...'
+                    sh '''
+                        if [ -f coverage/lcov.info ]; then
+                            echo "✅ Fichier de couverture trouvé"
+                            ls -lh coverage/lcov.info
+                            echo "Premières lignes du fichier:"
+                            head -20 coverage/lcov.info
+                        else
+                            echo "⚠️ Fichier de couverture non trouvé à coverage/lcov.info"
+                            echo "Contenu du répertoire frontend:"
+                            ls -la
+                            if [ -d coverage ]; then
+                                echo "Contenu du répertoire coverage:"
+                                ls -la coverage/
+                            else
+                                echo "❌ Le répertoire coverage n'existe pas"
+                            fi
+                        fi
+                    '''
                 }
             }
         }
