@@ -48,8 +48,9 @@ pipeline {
                             ${tool('SonarScanner')}/bin/sonar-scanner \
                             -Dsonar.projectKey=frontend-app \
                             -Dsonar.projectName=frontend-app \
-                            -Dsonar.sources=. \
-                            -Dsonar.host.url=http://localhost:9000
+                            -Dsonar.sources=src \
+                            -Dsonar.host.url=http://localhost:9000 \
+                            -Dsonar.verbose=true
                         """
                     }
                 }
