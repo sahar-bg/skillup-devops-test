@@ -62,7 +62,8 @@ pipeline {
             steps {
                 dir('backend') {
                     withSonarQubeEnv('SonarQube') {
-                        sh """
+                        withEnv(["SONAR_HOST_URL=http://172.17.0.3:9000"]) {
+                            sh """
                             ${SONAR_SCANNER_HOME}/bin/sonar-scanner \\
                             -Dsonar.projectKey=backend-hr-system \\
                             -Dsonar.projectName="Backend HR System" \\
