@@ -17,7 +17,7 @@ pipeline {
             steps {
                 dir('backend') {
                     echo 'Installation des dépendances...'
-                    bat 'npm ci'
+                    sh 'npm ci'
                 }
             }
         }
@@ -26,7 +26,7 @@ pipeline {
             steps {
                 dir('backend') {
                     echo 'Vérification du code avec ESLint...'
-                    bat 'npm run lint'
+                    sh 'npm run lint'
                 }
             }
         }
@@ -35,7 +35,7 @@ pipeline {
             steps {
                 dir('backend') {
                     echo 'Construction du projet...'
-                    bat 'npm run build'
+                    sh 'npm run build'
                 }
             }
         }
@@ -44,7 +44,7 @@ pipeline {
             steps {
                 dir('backend') {
                     echo 'Exécution des tests...'
-                    bat 'npm run test:ci'
+                    sh 'npm run test:ci'
                 }
             }
         }
