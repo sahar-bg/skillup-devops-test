@@ -261,7 +261,8 @@ describe('ManagerService', () => {
 
       const mockRequest = {
         _id: '507f1f77bcf86cd799439041',
-        ...mockManager,
+        managerId: mockManager._id,
+        department_id: mockManager.department_id,
         status: 'PENDING',
       };
 
@@ -334,7 +335,7 @@ describe('ManagerService', () => {
 
       expect(result.activities).toHaveLength(1);
       expect(result.department).toBeDefined();
-      expect(result.department.name).toBe('IT Department');
+      expect(result.department?.name).toBe('IT Department');
       expect(result.total).toBe(1);
     });
   });
@@ -508,7 +509,7 @@ describe('ManagerService', () => {
     it('should throw BadRequestException for invalid competence ID', async () => {
       const dto: EvaluateCompetenceDto = {
         competenceId: 'invalid-id',
-        hierarchie_eval: 'expert',
+        hierarchie_eval: 8,
       };
 
       await expect(service.evaluateCompetence(dto, '507f1f77bcf86cd799439011')).rejects.toThrow(
@@ -521,7 +522,7 @@ describe('ManagerService', () => {
 
       const dto: EvaluateCompetenceDto = {
         competenceId: '507f1f77bcf86cd799439051',
-        hierarchie_eval: 'expert',
+        hierarchie_eval: 8,
       };
 
       await expect(service.evaluateCompetence(dto, '507f1f77bcf86cd799439011')).rejects.toThrow(
@@ -539,7 +540,7 @@ describe('ManagerService', () => {
 
       const dto: EvaluateCompetenceDto = {
         competenceId: '507f1f77bcf86cd799439051',
-        hierarchie_eval: 'expert',
+        hierarchie_eval: 8,
       };
 
       await expect(service.evaluateCompetence(dto, '507f1f77bcf86cd799439011')).rejects.toThrow(
@@ -560,7 +561,7 @@ describe('ManagerService', () => {
 
       const updatedCompetence = {
         ...competence,
-        hierarchie_eval: 'expert',
+        hierarchie_eval: 8,
         etat: 'validated',
       };
 
@@ -568,14 +569,14 @@ describe('ManagerService', () => {
 
       const dto: EvaluateCompetenceDto = {
         competenceId: '507f1f77bcf86cd799439051',
-        hierarchie_eval: 'expert',
+        hierarchie_eval: 8,
         commentaire: 'Excellent travail',
       };
 
       const result = await service.evaluateCompetence(dto, '507f1f77bcf86cd799439011');
 
       expect(result.message).toBe('Évaluation enregistrée avec succès');
-      expect(result.competence.hierarchie_eval).toBe('expert');
+      expect(result.competence.hierarchie_eval).toBe(8);
       expect(result.competence.etat).toBe('validated');
       expect(result.commentaire).toBe('Excellent travail');
     });

@@ -42,6 +42,7 @@ describe('RecommendationService workflow guards', () => {
     mailService,
     auditService,
     smsService,
+    {} as any, // certificateService
   )
 
   beforeEach(() => {

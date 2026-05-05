@@ -14,6 +14,7 @@ export default tseslint.config(
 
   // Configuration de base
   {
+    files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
       globals: {
         ...globals.node,
