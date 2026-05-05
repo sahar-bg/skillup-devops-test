@@ -39,6 +39,25 @@ pipeline {
                 }
             }
         }
+        
+        stage('SonarQube Analysis') {
+            steps {
+                dir('frontend') {
+                    script {
+                        try {
+                            withSonarQubeEnv('Sonar') {
+                                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                                    sh "${tool('SonarScanner')}/bin/sonar-scanner -Dsonar.token=${SONAR_TOKEN}"
+                                }
+                            }
+                        } catch (Exception e) {
+                            echo "SonarQube analysis completed with issues: ${e.message}"
+                            unstable(message: "SonarQube analysis found quality gate issues")
+                        }
+                    }
+                }
+            }
+        }
     }
     
     post {
