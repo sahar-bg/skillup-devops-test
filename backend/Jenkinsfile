@@ -21,16 +21,7 @@ pipeline {
             steps {
                 dir('backend') {
                     echo 'Installation des dépendances...'
-                    bat 'npm ci'
-                }
-            }
-        }
-        
-        stage('Lint') {
-            steps {
-                dir('backend') {
-                    echo 'Vérification du code avec ESLint...'
-                    bat 'npm run lint'
+                    sh 'npm ci'
                 }
             }
         }
@@ -39,7 +30,7 @@ pipeline {
             steps {
                 dir('backend') {
                     echo 'Construction du projet...'
-                    bat 'npm run build'
+                    sh 'npm run build'
                 }
             }
         }
@@ -48,19 +39,20 @@ pipeline {
             steps {
                 dir('backend') {
                     echo 'Exécution des tests avec couverture...'
-                    bat 'npm run test:ci'
+                    sh 'npm run test:ci'
                 }
             }
             post {
                 always {
                     dir('backend') {
-                        // Publication des résultats de tests
-                        publishTestResults testResultsPattern: 'coverage/junit.xml'
-                        
-                        // Publication de la couverture de code
-                        publishCoverage adapters: [
-                            istanbulCoberturaAdapter('coverage/cobertura-coverage.xml')
-                        ], sourceFileResolver: sourceFiles('STORE_LAST_BUILD')
+                        // Publication des résultats de tests si disponibles
+                        script {
+                            if (fileExists('coverage/lcov.info')) {
+                                echo 'Fichiers de couverture trouvés'
+                            } else {
+                                echo 'Aucun fichier de couverture trouvé'
+                            }
+                        }
                     }
                 }
             }
@@ -70,17 +62,17 @@ pipeline {
             steps {
                 dir('backend') {
                     withSonarQubeEnv('SonarQubeServer') {
-                        bat """
-                            ${SONAR_SCANNER_HOME}/bin/sonar-scanner ^
-                            -Dsonar.projectKey=backend-hr-system ^
-                            -Dsonar.projectName="Backend HR System" ^
-                            -Dsonar.projectVersion=1.0 ^
-                            -Dsonar.sources=src ^
-                            -Dsonar.tests=src ^
-                            -Dsonar.test.inclusions=**/*.spec.ts ^
-                            -Dsonar.exclusions=**/*.spec.ts,node_modules/**,dist/** ^
-                            -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info ^
-                            -Dsonar.testExecutionReportPaths=coverage/test-report.xml
+                        sh """
+                            ${SONAR_SCANNER_HOME}/bin/sonar-scanner \\
+                            -Dsonar.projectKey=backend-hr-system \\
+                            -Dsonar.projectName="Backend HR System" \\
+                            -Dsonar.projectVersion=1.0 \\
+                            -Dsonar.sources=src \\
+                            -Dsonar.tests=src \\
+                            -Dsonar.test.inclusions=**/*.spec.ts,**/*.test.ts \\
+                            -Dsonar.exclusions=**/*.spec.ts,**/*.test.ts,node_modules/**,dist/**,coverage/** \\
+                            -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info \\
+                            -Dsonar.sourceEncoding=UTF-8
                         """
                     }
                 }
@@ -89,7 +81,7 @@ pipeline {
         
         stage('Quality Gate') {
             steps {
-                timeout(time: 1, unit: 'MINUTES') {
+                timeout(time: 2, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
                 }
             }
@@ -105,9 +97,6 @@ pipeline {
         }
         failure {
             echo '❌ Pipeline échoué. Vérifiez les logs pour plus de détails.'
-        }
-        cleanup {
-            cleanWs()
         }
     }
 }

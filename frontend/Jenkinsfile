@@ -21,7 +21,7 @@ pipeline {
             steps {
                 dir('frontend') {
                     echo 'Installation des dépendances...'
-                    bat 'npm ci'
+                    sh 'npm ci'
                 }
             }
         }
@@ -30,7 +30,7 @@ pipeline {
             steps {
                 dir('frontend') {
                     echo 'Construction du projet...'
-                    bat 'npm run build'
+                    sh 'npm run build'
                 }
             }
         }
@@ -39,19 +39,23 @@ pipeline {
             steps {
                 dir('frontend') {
                     echo 'Exécution des tests avec couverture...'
-                    bat 'npm run test:ci'
+                    sh 'npm run test:ci'
                 }
             }
             post {
                 always {
                     dir('frontend') {
                         // Publication des résultats de tests
-                        publishTestResults testResultsPattern: 'reports/junit.xml'
-                        
-                        // Publication de la couverture de code
-                        publishCoverage adapters: [
-                            istanbulCoberturaAdapter('coverage/cobertura-coverage.xml')
-                        ], sourceFileResolver: sourceFiles('STORE_LAST_BUILD')
+                        script {
+                            if (fileExists('reports/junit.xml')) {
+                                publishTestResults testResultsPattern: 'reports/junit.xml'
+                            }
+                            if (fileExists('coverage/cobertura-coverage.xml')) {
+                                publishCoverage adapters: [
+                                    istanbulCoberturaAdapter('coverage/cobertura-coverage.xml')
+                                ], sourceFileResolver: sourceFiles('STORE_LAST_BUILD')
+                            }
+                        }
                     }
                 }
             }
@@ -61,16 +65,16 @@ pipeline {
             steps {
                 dir('frontend') {
                     withSonarQubeEnv('SonarQubeServer') {
-                        bat """
-                            ${SONAR_SCANNER_HOME}/bin/sonar-scanner ^
-                            -Dsonar.projectKey=frontend-hr-system ^
-                            -Dsonar.projectName="Frontend HR System" ^
-                            -Dsonar.projectVersion=1.0 ^
-                            -Dsonar.sources=src ^
-                            -Dsonar.tests=src ^
-                            -Dsonar.test.inclusions=**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx ^
-                            -Dsonar.exclusions=**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx,node_modules/**,dist/**,build/** ^
-                            -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info ^
+                        sh """
+                            ${SONAR_SCANNER_HOME}/bin/sonar-scanner \\
+                            -Dsonar.projectKey=frontend-hr-system \\
+                            -Dsonar.projectName="Frontend HR System" \\
+                            -Dsonar.projectVersion=1.0 \\
+                            -Dsonar.sources=src \\
+                            -Dsonar.tests=src \\
+                            -Dsonar.test.inclusions=**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx \\
+                            -Dsonar.exclusions=**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx,node_modules/**,dist/**,build/** \\
+                            -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info \\
                             -Dsonar.testExecutionReportPaths=reports/junit.xml
                         """
                     }
@@ -96,9 +100,6 @@ pipeline {
         }
         failure {
             echo '❌ Pipeline échoué. Vérifiez les logs pour plus de détails.'
-        }
-        cleanup {
-            cleanWs()
         }
     }
 }

@@ -1,0 +1,11 @@
+{
+  "targetLevels": ["A", "AA"],
+  "includePaths": ["src/components", "src/pages"],
+  "excludePaths": ["node_modules", "dist", "build", "coverage"],
+  "outputFormats": ["json", "html", "text"],
+  "outputDirectory": "wcag-reports",
+  "failureThreshold": 10,
+  "enabledRules": [],
+  "disabledRules": [],
+  "componentsToAnalyze": []
+}

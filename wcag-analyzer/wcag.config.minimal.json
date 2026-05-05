@@ -1,0 +1,7 @@
+{
+  "targetLevels": ["AA"],
+  "includePaths": ["src"],
+  "excludePaths": ["node_modules"],
+  "outputFormats": ["html"],
+  "outputDirectory": "wcag-reports"
+}
