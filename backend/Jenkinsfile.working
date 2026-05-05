@@ -1,0 +1,55 @@
+pipeline {
+    agent any
+    
+    tools {
+        nodejs 'Node20'
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Récupération du code source...'
+                checkout scm
+            }
+        }
+        
+        stage('Install Dependencies') {
+            steps {
+                dir('backend') {
+                    echo 'Installation des dépendances...'
+                    sh 'npm ci'
+                }
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                dir('backend') {
+                    echo 'Construction du projet...'
+                    sh 'npm run build'
+                }
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                dir('backend') {
+                    echo 'Exécution des tests...'
+                    sh 'npm run test:ci'
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            echo 'Pipeline terminé'
+        }
+        success {
+            echo '✅ Pipeline réussi ! Tests passés.'
+        }
+        failure {
+            echo '❌ Pipeline échoué. Vérifiez les logs pour plus de détails.'
+        }
+    }
+}
