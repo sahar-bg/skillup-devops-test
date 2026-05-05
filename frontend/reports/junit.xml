@@ -1,61 +1,182 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuites name="vitest tests" tests="26" failures="0" errors="0" time="0.0685963">
-    <testsuite name="src/test/mediapipe-setup.test.ts" timestamp="2026-05-02T13:02:36.972Z" hostname="DESKTOP-2E08CL5" tests="3" failures="0" errors="0" skipped="0" time="0.012944">
-        <testcase classname="src/test/mediapipe-setup.test.ts" name="MediaPipe and fast-check setup &gt; should have fast-check available" time="0.0028255">
+<testsuites name="vitest tests" tests="53" failures="0" errors="0" time="0.3851964">
+    <testsuite name="src/services/chatService.test.ts" timestamp="2026-05-05T21:52:28.582Z" hostname="sahar" tests="7" failures="0" errors="0" skipped="0" time="0.0496828">
+        <testcase classname="src/services/chatService.test.ts" name="ChatService &gt; sendMessage &gt; should send message successfully and return response" time="0.0262872">
+            <system-out>
+🔍 ChatService - Envoi de la requête: {
+  url: &apos;http://localhost:3000/chat&apos;,
+  payload: { message: &apos;Bonjour&apos;, activityId: &apos;activity-123&apos; }
+}
+
+📥 ChatService - Réponse reçue: { status: 200, ok: true }
+
+            </system-out>
         </testcase>
-        <testcase classname="src/test/mediapipe-setup.test.ts" name="MediaPipe and fast-check setup &gt; should verify fast-check works with a simple property" time="0.0069187">
+        <testcase classname="src/services/chatService.test.ts" name="ChatService &gt; sendMessage &gt; should throw error for 400 Bad Request" time="0.007695">
+            <system-out>
+🔍 ChatService - Envoi de la requête: {
+  url: &apos;http://localhost:3000/chat&apos;,
+  payload: { message: &apos;&apos;, activityId: &apos;activity-123&apos; }
+}
+
+📥 ChatService - Réponse reçue: { status: 400, ok: false }
+
+            </system-out>
         </testcase>
-        <testcase classname="src/test/mediapipe-setup.test.ts" name="MediaPipe and fast-check setup &gt; should have MediaPipe types available" time="0.000228">
+        <testcase classname="src/services/chatService.test.ts" name="ChatService &gt; sendMessage &gt; should throw error for 404 Not Found" time="0.0023456">
+            <system-out>
+🔍 ChatService - Envoi de la requête: {
+  url: &apos;http://localhost:3000/chat&apos;,
+  payload: { message: &apos;Bonjour&apos;, activityId: &apos;invalid-id&apos; }
+}
+
+📥 ChatService - Réponse reçue: { status: 404, ok: false }
+
+            </system-out>
+        </testcase>
+        <testcase classname="src/services/chatService.test.ts" name="ChatService &gt; sendMessage &gt; should throw error for 503 Service Unavailable" time="0.0018735">
+            <system-out>
+🔍 ChatService - Envoi de la requête: {
+  url: &apos;http://localhost:3000/chat&apos;,
+  payload: { message: &apos;Bonjour&apos;, activityId: &apos;activity-123&apos; }
+}
+
+📥 ChatService - Réponse reçue: { status: 503, ok: false }
+
+            </system-out>
+        </testcase>
+        <testcase classname="src/services/chatService.test.ts" name="ChatService &gt; sendMessage &gt; should throw generic error for other HTTP errors" time="0.0018843">
+            <system-out>
+🔍 ChatService - Envoi de la requête: {
+  url: &apos;http://localhost:3000/chat&apos;,
+  payload: { message: &apos;Bonjour&apos;, activityId: &apos;activity-123&apos; }
+}
+
+📥 ChatService - Réponse reçue: { status: 500, ok: false }
+
+            </system-out>
+        </testcase>
+        <testcase classname="src/services/chatService.test.ts" name="ChatService &gt; sendMessage &gt; should throw connection error when fetch fails" time="0.0016145">
+            <system-out>
+🔍 ChatService - Envoi de la requête: {
+  url: &apos;http://localhost:3000/chat&apos;,
+  payload: { message: &apos;Bonjour&apos;, activityId: &apos;activity-123&apos; }
+}
+
+            </system-out>
+        </testcase>
+        <testcase classname="src/services/chatService.test.ts" name="ChatService &gt; sendMessage &gt; should handle empty response message" time="0.0014387">
+            <system-out>
+🔍 ChatService - Envoi de la requête: {
+  url: &apos;http://localhost:3000/chat&apos;,
+  payload: { message: &apos;Test&apos;, activityId: &apos;activity-123&apos; }
+}
+
+📥 ChatService - Réponse reçue: { status: 200, ok: true }
+
+            </system-out>
         </testcase>
     </testsuite>
-    <testsuite name="src/utils/gestureDetector.test.ts" timestamp="2026-05-02T13:02:36.974Z" hostname="DESKTOP-2E08CL5" tests="15" failures="0" errors="0" skipped="0" time="0.0081294">
-        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; euclideanDistance &gt; should calculate distance between two identical points as 0" time="0.0029654">
+    <testsuite name="src/services/googleCalendarService.test.ts" timestamp="2026-05-05T21:52:28.592Z" hostname="sahar" tests="11" failures="0" errors="0" skipped="0" time="0.0342401">
+        <testcase classname="src/services/googleCalendarService.test.ts" name="GoogleCalendarService &gt; isGoogleConnected &gt; should return false when no token exists" time="0.0102893">
         </testcase>
-        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; euclideanDistance &gt; should calculate distance in 2D (z=0)" time="0.0002838">
+        <testcase classname="src/services/googleCalendarService.test.ts" name="GoogleCalendarService &gt; isGoogleConnected &gt; should return false when token is expired" time="0.0045924">
         </testcase>
-        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; euclideanDistance &gt; should calculate distance in 3D" time="0.000247">
+        <testcase classname="src/services/googleCalendarService.test.ts" name="GoogleCalendarService &gt; isGoogleConnected &gt; should return true when token is valid" time="0.0009879">
         </testcase>
-        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; euclideanDistance &gt; should calculate distance with normalized coordinates (0-1)" time="0.0001678">
+        <testcase classname="src/services/googleCalendarService.test.ts" name="GoogleCalendarService &gt; isGoogleConnected &gt; should return false when token exists but no expiry" time="0.0007212">
         </testcase>
-        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; euclideanDistance &gt; should be symmetric (distance(p1,p2) = distance(p2,p1))" time="0.0001518">
+        <testcase classname="src/services/googleCalendarService.test.ts" name="GoogleCalendarService &gt; disconnectGoogle &gt; should revoke token and clear localStorage" time="0.0052236">
         </testcase>
-        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; calculateReferenceDistance &gt; should calculate distance between wrist (0) and middle MCP (9)" time="0.0002298">
+        <testcase classname="src/services/googleCalendarService.test.ts" name="GoogleCalendarService &gt; disconnectGoogle &gt; should clear localStorage even when no token exists" time="0.0009866">
         </testcase>
-        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; calculateReferenceDistance &gt; should calculate reference distance in 3D" time="0.0001799">
+        <testcase classname="src/services/googleCalendarService.test.ts" name="GoogleCalendarService &gt; getGoogleConnectionStatus &gt; should return connected status with email" time="0.0010646">
         </testcase>
-        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; calculateReferenceDistance &gt; should work with realistic hand landmarks" time="0.0002925">
+        <testcase classname="src/services/googleCalendarService.test.ts" name="GoogleCalendarService &gt; getGoogleConnectionStatus &gt; should return disconnected status" time="0.0008616">
         </testcase>
-        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; normalizedDistance &gt; should normalize distance by reference distance" time="0.0001852">
+        <testcase classname="src/services/googleCalendarService.test.ts" name="GoogleCalendarService &gt; getGoogleConnectionStatus &gt; should return connected without email if email not stored" time="0.0008949">
         </testcase>
-        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; normalizedDistance &gt; should return value &gt; 1 when distance exceeds reference" time="0.0001387">
+        <testcase classname="src/services/googleCalendarService.test.ts" name="GoogleCalendarService &gt; ActivityEvent type &gt; should accept valid activity event" time="0.0009434">
         </testcase>
-        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; normalizedDistance &gt; should return value &lt; 1 when distance is less than reference" time="0.0001312">
-        </testcase>
-        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; normalizedDistance &gt; should detect extended finger (normalized distance &gt; 0.6)" time="0.0001636">
-        </testcase>
-        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; normalizedDistance &gt; should detect closed finger (normalized distance &lt; 0.3)" time="0.0001761">
-        </testcase>
-        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; normalizedDistance &gt; should be independent of hand size with proper reference" time="0.000169">
-        </testcase>
-        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; Integration - Complete gesture detection flow &gt; should correctly normalize distances for gesture detection" time="0.0002405">
+        <testcase classname="src/services/googleCalendarService.test.ts" name="GoogleCalendarService &gt; ActivityEvent type &gt; should accept activity event without optional fields" time="0.000742">
         </testcase>
     </testsuite>
-    <testsuite name="src/pages/hr/activityChatParse.spec.ts" timestamp="2026-05-02T13:02:36.978Z" hostname="DESKTOP-2E08CL5" tests="8" failures="0" errors="0" skipped="0" time="0.0475229">
-        <testcase classname="src/pages/hr/activityChatParse.spec.ts" name="activityChatParse &gt; parseActivityFromText &gt; détecte une formation et le titre après le mot formation" time="0.004628">
+    <testsuite name="src/services/recommendationService.test.ts" timestamp="2026-05-05T21:52:28.596Z" hostname="sahar" tests="9" failures="0" errors="0" skipped="0" time="0.0679539">
+        <testcase classname="src/services/recommendationService.test.ts" name="RecommendationService &gt; respondToRecommendation &gt; should send ACCEPTED response successfully" time="0.0265054">
         </testcase>
-        <testcase classname="src/pages/hr/activityChatParse.spec.ts" name="activityChatParse &gt; parseActivityFromText &gt; détecte certification et priorité haute" time="0.0005468">
+        <testcase classname="src/services/recommendationService.test.ts" name="RecommendationService &gt; respondToRecommendation &gt; should send REJECTED response successfully" time="0.0024984">
         </testcase>
-        <testcase classname="src/pages/hr/activityChatParse.spec.ts" name="activityChatParse &gt; parseActivityFromText &gt; extrait une compétence présente dans le texte" time="0.0002463">
+        <testcase classname="src/services/recommendationService.test.ts" name="RecommendationService &gt; respondToRecommendation &gt; should handle network error" time="0.0036887">
         </testcase>
-        <testcase classname="src/pages/hr/activityChatParse.spec.ts" name="activityChatParse &gt; generateRecommendations &gt; ajoute une reco pour gros groupe" time="0.000233">
+        <testcase classname="src/services/recommendationService.test.ts" name="RecommendationService &gt; respondToRecommendation &gt; should handle 404 error (recommendation not found)" time="0.0015472">
         </testcase>
-        <testcase classname="src/pages/hr/activityChatParse.spec.ts" name="activityChatParse &gt; generateRecommendations &gt; ajoute une reco pour formation" time="0.0002342">
+        <testcase classname="src/services/recommendationService.test.ts" name="RecommendationService &gt; respondToRecommendation &gt; should handle 500 server error" time="0.0020612">
         </testcase>
-        <testcase classname="src/pages/hr/activityChatParse.spec.ts" name="activityChatParse &gt; generateManagerMessage &gt; produit sujet et corps" time="0.0379953">
+        <testcase classname="src/services/recommendationService.test.ts" name="RecommendationService &gt; respondToRecommendation &gt; should handle 401 error and redirect to login when no refresh token" time="0.0041365">
         </testcase>
-        <testcase classname="src/pages/hr/activityChatParse.spec.ts" name="activityChatParse &gt; parseFieldCompletion &gt; parse champ: valeur" time="0.0010193">
+        <testcase classname="src/services/recommendationService.test.ts" name="RecommendationService &gt; respondToRecommendation &gt; should retry after successful token refresh" time="0.0032441">
         </testcase>
-        <testcase classname="src/pages/hr/activityChatParse.spec.ts" name="activityChatParse &gt; parseFieldCompletion &gt; retourne null si pas de préfixe attendu" time="0.0002292">
+        <testcase classname="src/services/recommendationService.test.ts" name="RecommendationService &gt; respondToRecommendation &gt; should handle generic error with custom message" time="0.004073">
+        </testcase>
+        <testcase classname="src/services/recommendationService.test.ts" name="RecommendationService &gt; updateToken &gt; should update authentication token" time="0.0072892">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/test/mediapipe-setup.test.ts" timestamp="2026-05-05T21:52:28.599Z" hostname="sahar" tests="3" failures="0" errors="0" skipped="0" time="0.0302731">
+        <testcase classname="src/test/mediapipe-setup.test.ts" name="MediaPipe and fast-check setup &gt; should have fast-check available" time="0.0064631">
+        </testcase>
+        <testcase classname="src/test/mediapipe-setup.test.ts" name="MediaPipe and fast-check setup &gt; should verify fast-check works with a simple property" time="0.0176466">
+        </testcase>
+        <testcase classname="src/test/mediapipe-setup.test.ts" name="MediaPipe and fast-check setup &gt; should have MediaPipe types available" time="0.0006599">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/utils/gestureDetector.test.ts" timestamp="2026-05-05T21:52:28.601Z" hostname="sahar" tests="15" failures="0" errors="0" skipped="0" time="0.0218928">
+        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; euclideanDistance &gt; should calculate distance between two identical points as 0" time="0.0075081">
+        </testcase>
+        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; euclideanDistance &gt; should calculate distance in 2D (z=0)" time="0.0006741">
+        </testcase>
+        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; euclideanDistance &gt; should calculate distance in 3D" time="0.0006541">
+        </testcase>
+        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; euclideanDistance &gt; should calculate distance with normalized coordinates (0-1)" time="0.0004599">
+        </testcase>
+        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; euclideanDistance &gt; should be symmetric (distance(p1,p2) = distance(p2,p1))" time="0.0003978">
+        </testcase>
+        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; calculateReferenceDistance &gt; should calculate distance between wrist (0) and middle MCP (9)" time="0.0005748">
+        </testcase>
+        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; calculateReferenceDistance &gt; should calculate reference distance in 3D" time="0.0004063">
+        </testcase>
+        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; calculateReferenceDistance &gt; should work with realistic hand landmarks" time="0.0008038">
+        </testcase>
+        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; normalizedDistance &gt; should normalize distance by reference distance" time="0.0005136">
+        </testcase>
+        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; normalizedDistance &gt; should return value &gt; 1 when distance exceeds reference" time="0.0003599">
+        </testcase>
+        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; normalizedDistance &gt; should return value &lt; 1 when distance is less than reference" time="0.0003666">
+        </testcase>
+        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; normalizedDistance &gt; should detect extended finger (normalized distance &gt; 0.6)" time="0.0005217">
+        </testcase>
+        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; normalizedDistance &gt; should detect closed finger (normalized distance &lt; 0.3)" time="0.0005187">
+        </testcase>
+        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; normalizedDistance &gt; should be independent of hand size with proper reference" time="0.0005408">
+        </testcase>
+        <testcase classname="src/utils/gestureDetector.test.ts" name="gestureDetector &gt; Integration - Complete gesture detection flow &gt; should correctly normalize distances for gesture detection" time="0.0011689">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/pages/hr/activityChatParse.spec.ts" timestamp="2026-05-05T21:52:28.607Z" hostname="sahar" tests="8" failures="0" errors="0" skipped="0" time="0.1811537">
+        <testcase classname="src/pages/hr/activityChatParse.spec.ts" name="activityChatParse &gt; parseActivityFromText &gt; détecte une formation et le titre après le mot formation" time="0.0092182">
+        </testcase>
+        <testcase classname="src/pages/hr/activityChatParse.spec.ts" name="activityChatParse &gt; parseActivityFromText &gt; détecte certification et priorité haute" time="0.0015083">
+        </testcase>
+        <testcase classname="src/pages/hr/activityChatParse.spec.ts" name="activityChatParse &gt; parseActivityFromText &gt; extrait une compétence présente dans le texte" time="0.0007481">
+        </testcase>
+        <testcase classname="src/pages/hr/activityChatParse.spec.ts" name="activityChatParse &gt; generateRecommendations &gt; ajoute une reco pour gros groupe" time="0.0006626">
+        </testcase>
+        <testcase classname="src/pages/hr/activityChatParse.spec.ts" name="activityChatParse &gt; generateRecommendations &gt; ajoute une reco pour formation" time="0.0007905">
+        </testcase>
+        <testcase classname="src/pages/hr/activityChatParse.spec.ts" name="activityChatParse &gt; generateManagerMessage &gt; produit sujet et corps" time="0.158375">
+        </testcase>
+        <testcase classname="src/pages/hr/activityChatParse.spec.ts" name="activityChatParse &gt; parseFieldCompletion &gt; parse champ: valeur" time="0.0018125">
+        </testcase>
+        <testcase classname="src/pages/hr/activityChatParse.spec.ts" name="activityChatParse &gt; parseFieldCompletion &gt; retourne null si pas de préfixe attendu" time="0.0005511">
         </testcase>
     </testsuite>
 </testsuites>
