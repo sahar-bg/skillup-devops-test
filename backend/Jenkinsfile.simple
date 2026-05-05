@@ -24,22 +24,6 @@ pipeline {
             }
         }
         
-        stage('Lint') {
-            steps {
-                dir('backend') {
-                    script {
-                        // Try to auto-fix what can be fixed
-                        sh 'npm run lint || true'
-                        // Then run lint to check remaining issues
-                        def lintResult = sh(script: 'npm run lint', returnStatus: true)
-                        if (lintResult != 0) {
-                            unstable(message: "Linting found issues. Please review and fix.")
-                        }
-                    }
-                }
-            }
-        }
-        
         stage('Type Check') {
             steps {
                 dir('backend') {

@@ -454,7 +454,7 @@ describe('ChatService', () => {
     it('should handle different user roles correctly', async () => {
       delete process.env.OPENROUTER_API_KEY;
 
-      const roles: Array<'ADMIN' | 'HR' | 'MANAGER' | 'EMPLOYEE'> = ['ADMIN', 'HR', 'MANAGER', 'EMPLOYEE'];
+      const roles = ['ADMIN', 'HR', 'MANAGER', 'EMPLOYEE'] as const;
 
       for (const role of roles) {
         const guideDto: WebsiteGuideDto = {
