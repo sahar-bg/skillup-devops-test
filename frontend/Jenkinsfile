@@ -1,0 +1,104 @@
+pipeline {
+    agent any
+    
+    tools {
+        nodejs 'Node20'
+    }
+    
+    environment {
+        SONAR_SCANNER_HOME = tool 'SonarScanner'
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Récupération du code source...'
+                checkout scm
+            }
+        }
+        
+        stage('Install Dependencies') {
+            steps {
+                dir('frontend') {
+                    echo 'Installation des dépendances...'
+                    bat 'npm ci'
+                }
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                dir('frontend') {
+                    echo 'Construction du projet...'
+                    bat 'npm run build'
+                }
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                dir('frontend') {
+                    echo 'Exécution des tests avec couverture...'
+                    bat 'npm run test:ci'
+                }
+            }
+            post {
+                always {
+                    dir('frontend') {
+                        // Publication des résultats de tests
+                        publishTestResults testResultsPattern: 'reports/junit.xml'
+                        
+                        // Publication de la couverture de code
+                        publishCoverage adapters: [
+                            istanbulCoberturaAdapter('coverage/cobertura-coverage.xml')
+                        ], sourceFileResolver: sourceFiles('STORE_LAST_BUILD')
+                    }
+                }
+            }
+        }
+        
+        stage('SonarQube Analysis') {
+            steps {
+                dir('frontend') {
+                    withSonarQubeEnv('SonarQubeServer') {
+                        bat """
+                            ${SONAR_SCANNER_HOME}/bin/sonar-scanner ^
+                            -Dsonar.projectKey=frontend-hr-system ^
+                            -Dsonar.projectName="Frontend HR System" ^
+                            -Dsonar.projectVersion=1.0 ^
+                            -Dsonar.sources=src ^
+                            -Dsonar.tests=src ^
+                            -Dsonar.test.inclusions=**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx ^
+                            -Dsonar.exclusions=**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx,node_modules/**,dist/**,build/** ^
+                            -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info ^
+                            -Dsonar.testExecutionReportPaths=reports/junit.xml
+                        """
+                    }
+                }
+            }
+        }
+        
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 1, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            echo 'Pipeline terminé'
+        }
+        success {
+            echo '✅ Pipeline réussi ! Tests passés et analyse SonarQube terminée.'
+        }
+        failure {
+            echo '❌ Pipeline échoué. Vérifiez les logs pour plus de détails.'
+        }
+        cleanup {
+            cleanWs()
+        }
+    }
+}
