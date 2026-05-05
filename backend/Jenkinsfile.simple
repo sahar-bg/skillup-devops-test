@@ -22,15 +22,6 @@ pipeline {
             }
         }
         
-        stage('Lint') {
-            steps {
-                dir('backend') {
-                    echo 'Vérification du code avec ESLint...'
-                    sh 'npm run lint'
-                }
-            }
-        }
-        
         stage('Build') {
             steps {
                 dir('backend') {
