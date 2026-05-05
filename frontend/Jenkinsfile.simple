@@ -52,16 +52,40 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 dir('frontend') {
+                    echo '🔍 Analyse SonarQube avec couverture...'
+                    
+                    // Vérification de la génération des fichiers de couverture
+                    echo '📊 Vérification des fichiers de couverture...'
+                    sh '''
+                        if [ -f coverage/lcov.info ]; then
+                            echo "✅ Fichier de couverture trouvé"
+                            ls -lh coverage/lcov.info
+                            echo "Premières lignes du fichier:"
+                            head -20 coverage/lcov.info
+                        else
+                            echo "⚠️ Fichier de couverture non trouvé à coverage/lcov.info"
+                        fi
+                    '''
+                    
                     withSonarQubeEnv('SonarQube') {
-                        sh """
-                            ${tool('SonarScanner')}/bin/sonar-scanner \
-                            -Dsonar.projectKey=frontend-app \
-                            -Dsonar.projectName=frontend-app \
-                            -Dsonar.sources=src \
-                            -Dsonar.host.url=http://172.17.0.3:9000 \
-                            -Dsonar.verbose=true
+                        withEnv(["SONAR_HOST_URL=http://172.17.0.3:9000"]) {
+                            sh """
+                            ${tool('SonarScanner')}/bin/sonar-scanner \\
+                            -Dsonar.projectKey=frontend-app \\
+                            -Dsonar.projectName="Frontend HR System" \\
+                            -Dsonar.projectVersion=1.0 \\
+                            -Dsonar.sources=src \\
+                            -Dsonar.tests=src \\
+                            -Dsonar.test.inclusions=**/*.spec.ts,**/*.spec.tsx,**/*.test.ts,**/*.test.tsx \\
+                            -Dsonar.exclusions=**/*.spec.ts,**/*.spec.tsx,**/*.test.ts,**/*.test.tsx,node_modules/**,dist/**,coverage/** \\
+                            -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info \\
+                            -Dsonar.sourceEncoding=UTF-8
                         """
+                        }
                     }
+                    
+                    echo '✅ Analyse SonarQube terminée avec succès!'
+                    echo '📊 Consultez les résultats: http://172.17.0.3:9000/dashboard?id=frontend-app'
                 }
             }
         }
