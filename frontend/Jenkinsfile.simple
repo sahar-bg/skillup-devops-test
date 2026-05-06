@@ -37,6 +37,20 @@ pipeline {
         stage('Test') {
             steps {
                 dir('frontend') {
+                    echo 'Vérification du package de couverture...'
+                    sh '''
+                        if [ -d node_modules/@vitest/coverage-v8 ]; then
+                            echo "✅ Package @vitest/coverage-v8 installé"
+                        else
+                            echo "❌ Package @vitest/coverage-v8 NON installé"
+                            echo "Installation du package..."
+                            npm install --save-dev @vitest/coverage-v8
+                        fi
+                    '''
+                    
+                    echo 'Création du répertoire coverage...'
+                    sh 'mkdir -p coverage'
+                    
                     echo 'Exécution des tests avec couverture...'
                     script {
                         def testResult = sh(script: 'npm run test:ci', returnStatus: true)
@@ -56,14 +70,8 @@ pipeline {
                             head -20 coverage/lcov.info
                         else
                             echo "⚠️ Fichier de couverture non trouvé à coverage/lcov.info"
-                            echo "Contenu du répertoire frontend:"
-                            ls -la
-                            if [ -d coverage ]; then
-                                echo "Contenu du répertoire coverage:"
-                                ls -la coverage/
-                            else
-                                echo "❌ Le répertoire coverage n'existe pas"
-                            fi
+                            echo "Contenu du répertoire coverage:"
+                            ls -la coverage/
                         fi
                     '''
                 }
