@@ -27,7 +27,8 @@ export default defineConfig({
     setupFiles: './src/test/setup.ts',
     coverage: {
       provider: 'istanbul',
-      reporter: ['text', 'lcov', 'json'],
+      enabled: true,
+      reporter: ['text', 'lcov', 'json', 'html'],
       reportsDirectory: './coverage',
       include: ['src/**/*.{ts,tsx}'],
       exclude: [
@@ -36,6 +37,8 @@ export default defineConfig({
         'src/test/**',
         '**/node_modules/**',
       ],
+      all: true,
+      clean: true,
     },
   },
 })

@@ -48,9 +48,6 @@ pipeline {
                         fi
                     '''
                     
-                    echo 'Création du répertoire coverage...'
-                    sh 'mkdir -p coverage'
-                    
                     echo 'Exécution des tests avec couverture...'
                     script {
                         def testResult = sh(script: 'npm run test:ci', returnStatus: true)
@@ -63,15 +60,22 @@ pipeline {
                     // Vérification de la génération des fichiers de couverture
                     echo '📊 Vérification des fichiers de couverture...'
                     sh '''
-                        if [ -f coverage/lcov.info ]; then
-                            echo "✅ Fichier de couverture trouvé"
-                            ls -lh coverage/lcov.info
-                            echo "Premières lignes du fichier:"
-                            head -20 coverage/lcov.info
-                        else
-                            echo "⚠️ Fichier de couverture non trouvé à coverage/lcov.info"
+                        echo "Contenu du répertoire frontend:"
+                        ls -la
+                        if [ -d coverage ]; then
+                            echo "✅ Répertoire coverage trouvé"
                             echo "Contenu du répertoire coverage:"
                             ls -la coverage/
+                            if [ -f coverage/lcov.info ]; then
+                                echo "✅ Fichier lcov.info trouvé"
+                                ls -lh coverage/lcov.info
+                                echo "Premières lignes du fichier:"
+                                head -20 coverage/lcov.info
+                            else
+                                echo "⚠️ Fichier lcov.info non trouvé"
+                            fi
+                        else
+                            echo "❌ Répertoire coverage non créé"
                         fi
                     '''
                 }
