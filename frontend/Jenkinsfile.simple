@@ -39,12 +39,12 @@ pipeline {
                 dir('frontend') {
                     echo 'Vérification du package de couverture...'
                     sh '''
-                        if [ -d node_modules/@vitest/coverage-v8 ]; then
-                            echo "✅ Package @vitest/coverage-v8 installé"
+                        if [ -d node_modules/@vitest/coverage-istanbul ]; then
+                            echo "✅ Package @vitest/coverage-istanbul installé"
                         else
-                            echo "❌ Package @vitest/coverage-v8 NON installé"
+                            echo "❌ Package @vitest/coverage-istanbul NON installé"
                             echo "Installation du package..."
-                            npm install --save-dev @vitest/coverage-v8
+                            npm install --save-dev @vitest/coverage-istanbul
                         fi
                     '''
                     
